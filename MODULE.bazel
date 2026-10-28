@@ -17,9 +17,12 @@ bazel_dep(name = "rules_go", version = "0.64.2")
 # The helpers toolchain, which every rule that runs a tool needs.
 register_toolchains("//netlist/toolchains:all")
 
-# The demonstration tool of the swap test template (netlist/private/swapdemo).
+# The demonstration tools of the swap test template
+# (netlist/private/swapdemo) and of determinism_test's own tests
+# (netlist/private/detdemo).
 register_toolchains(
     "//netlist/private/swapdemo:all",
+    "//netlist/private/detdemo:all",
     dev_dependency = True,
 )
 

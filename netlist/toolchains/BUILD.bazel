@@ -26,6 +26,7 @@ config_setting(
 
 helpers_toolchain(
     name = "helpers_impl",
+    compare = "//netlist/private/detcompare",
     launcher = "//netlist/private/launcher",
     swapcheck = "//netlist/private/swapcheck",
 )

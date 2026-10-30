@@ -1,0 +1,9 @@
+bazel_dep(name = "rules_netlist", version = "0.0.0")
+local_path_override(
+    module_name = "rules_netlist",
+    path = "..",
+)
+git_override(
+    module_name = "z",
+    remote = "https://example.com/z.git",
+)

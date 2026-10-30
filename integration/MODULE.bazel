@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # The Bazel Central Registry presubmit builds this module against the
-# published rules_netlist archive. `.bcr/presubmit.yml` names it by the
+# published hdlf_rules_netlist archive. `.bcr/presubmit.yml` names it by the
 # `module_path: "integration"` key.
 #
 # The version below and the override are both replaced by the registry
@@ -9,26 +9,27 @@
 # Locally the override makes the module resolve to the parent directory, so
 # `cd integration && bazel test //...` exercises the working tree.
 module(
-    name = "rules_netlist_integration",
+    name = "hdlf_rules_netlist_integration",
     version = "0.0.0",
 )
 
-bazel_dep(name = "rules_netlist", version = "0.0.0")
+bazel_dep(name = "hdlf_rules_netlist", version = "0.0.0")
 local_path_override(
-    module_name = "rules_netlist",
+    module_name = "hdlf_rules_netlist",
     path = "..",
 )
 
 bazel_dep(name = "bazel_skylib", version = "1.9.2")
 
-# rules_netlist's own override does not reach this module: overrides apply in
-# the root module only. The same pinned commit of rules_kicad (issue #8).
-bazel_dep(name = "rules_kicad", version = "0.0.0")
+# hdlf_rules_netlist's own override does not reach this module: overrides
+# apply in the root module only. The same pinned commit of hdlf_rules_kicad
+# (issue #8).
+bazel_dep(name = "hdlf_rules_kicad", version = "0.0.0")
 
 # The same pin as MODULE.bazel and README.md; change all three together.
 archive_override(
-    module_name = "rules_kicad",
-    integrity = "sha256-L/dRAnTaCchSN66G81ijmGUiDzIUcU3DAy8RpNsaDMY=",
-    strip_prefix = "bazel_rules_kicad-eda301dc59f9c29bd4fe2460bdd521eb9253a745",
-    urls = ["https://github.com/filmil/bazel_rules_kicad/archive/eda301dc59f9c29bd4fe2460bdd521eb9253a745.tar.gz"],
+    module_name = "hdlf_rules_kicad",
+    integrity = "sha256-bz9RwwNoS0kCPESYe+qbysvlvuv9rVQpqbeqZ+Qj91U=",
+    strip_prefix = "bazel_rules_kicad-ecd6ae9329a7830c8f7144db88b5d2bbb24041e9",
+    urls = ["https://github.com/filmil/bazel_rules_kicad/archive/ecd6ae9329a7830c8f7144db88b5d2bbb24041e9.tar.gz"],
 )

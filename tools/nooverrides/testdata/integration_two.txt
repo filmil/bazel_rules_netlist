@@ -1,9 +1,9 @@
-bazel_dep(name = "rules_netlist", version = "0.0.0")
+bazel_dep(name = "hdlf_rules_netlist", version = "0.0.0")
 local_path_override(
-    module_name = "rules_netlist",
+    module_name = "hdlf_rules_netlist",
     path = "..",
 )
 local_path_override(
-    module_name = "rules_netlist",
+    module_name = "hdlf_rules_netlist",
     path = "../again",
 )

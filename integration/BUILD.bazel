@@ -1,31 +1,31 @@
 # SPDX-License-Identifier: Apache-2.0
 #
-# The example consumer. It uses only the public API of rules_netlist, as a
+# The example consumer. It uses only the public API of hdlf_rules_netlist, as a
 # user of the published module would. The e2e circuit arrives with
 # skidl_netlist (milestone M6).
 load("@bazel_skylib//rules:build_test.bzl", "build_test")
 load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
 load("@bazel_skylib//rules:write_file.bzl", "write_file")
-load("@rules_netlist//netlist:defs.bzl", "RULES_NETLIST_API_VERSION")
+load("@hdlf_rules_netlist//netlist:defs.bzl", "RULES_NETLIST_API_VERSION")
 
-# rules_kicad resolves through its archive_override, and its public API
-# loads and builds in a module that depends on rules_netlist (issue #8).
+# hdlf_rules_kicad resolves through its archive_override, and its public API
+# loads and builds in a module that depends on hdlf_rules_netlist (issue #8).
 build_test(
-    name = "rules_kicad_builds",
+    name = "hdlf_rules_kicad_builds",
     size = "small",
-    targets = ["@rules_kicad//kicad:defs"],
+    targets = ["@hdlf_rules_kicad//kicad:defs"],
 )
 
 # The public packages load and build: the rules, and the root package
-# with the --@rules_netlist//:tools flag that every user's build reads.
+# with the --@hdlf_rules_netlist//:tools flag that every user's build reads.
 build_test(
     name = "public_api_builds",
     size = "small",
     targets = [
-        "@rules_netlist//:tools",
-        "@rules_netlist//:tools_prebuilt",
-        "@rules_netlist//:tools_source",
-        "@rules_netlist//netlist:defs",
+        "@hdlf_rules_netlist//:tools",
+        "@hdlf_rules_netlist//:tools_prebuilt",
+        "@hdlf_rules_netlist//:tools_source",
+        "@hdlf_rules_netlist//netlist:defs",
     ],
 )
 

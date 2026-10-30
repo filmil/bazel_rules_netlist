@@ -30,15 +30,15 @@ func TestCheck(t *testing.T) {
 		{"root_clean.txt", "", ""},
 		{"root_archive.txt", "", `:1: archive_override of "rules_kicad"`},
 		{"root_local.txt", "", `:1: local_path_override of "y"`},
-		{"integration_clean.txt", "rules_netlist", ""},
-		{"integration_comment.txt", "rules_netlist", ""},
-		{"integration_archive.txt", "rules_netlist", `:6: archive_override of "rules_kicad"`},
-		{"integration_git.txt", "rules_netlist", `:6: git_override of "z"`},
-		{"integration_other.txt", "rules_netlist", `local_path_override of "other"`},
-		{"integration_two.txt", "rules_netlist", `:6: local_path_override of "rules_netlist"`},
-		{"integration_none.txt", "rules_netlist", `no local_path_override of "rules_netlist"`},
+		{"integration_clean.txt", "hdlf_rules_netlist", ""},
+		{"integration_comment.txt", "hdlf_rules_netlist", ""},
+		{"integration_archive.txt", "hdlf_rules_netlist", `:6: archive_override of "rules_kicad"`},
+		{"integration_git.txt", "hdlf_rules_netlist", `:6: git_override of "z"`},
+		{"integration_other.txt", "hdlf_rules_netlist", `local_path_override of "other"`},
+		{"integration_two.txt", "hdlf_rules_netlist", `:6: local_path_override of "hdlf_rules_netlist"`},
+		{"integration_none.txt", "hdlf_rules_netlist", `no local_path_override of "hdlf_rules_netlist"`},
 		// The integration module's override fails the root's check.
-		{"integration_clean.txt", "", `local_path_override of "rules_netlist"`},
+		{"integration_clean.txt", "", `local_path_override of "hdlf_rules_netlist"`},
 	} {
 		got := strings.Join(Check(c.file, read(t, c.file), c.allow), "\n")
 		switch {

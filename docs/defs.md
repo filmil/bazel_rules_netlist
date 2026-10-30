@@ -1,11 +1,11 @@
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-Public API of rules_netlist.
+Public API of hdlf_rules_netlist.
 
 Load every rule from this file:
 
 ```starlark
-load("@rules_netlist//netlist:defs.bzl", "determinism_test", "swap_test", "tool_toolchain")
+load("@hdlf_rules_netlist//netlist:defs.bzl", "determinism_test", "swap_test", "tool_toolchain")
 ```
 
 The rules arrive in milestone M6 (see the issues of
@@ -17,7 +17,7 @@ entry point; everything under `//netlist/private` may change without notice.
 ## tool_toolchain
 
 <pre>
-load("@rules_netlist//netlist:defs.bzl", "tool_toolchain")
+load("@hdlf_rules_netlist//netlist:defs.bzl", "tool_toolchain")
 
 tool_toolchain(<a href="#tool_toolchain-name">name</a>, <a href="#tool_toolchain-tools">tools</a>)
 </pre>
@@ -36,7 +36,7 @@ tool_toolchain(
 toolchain(
     name = "my_skidl",
     toolchain = ":my_skidl_impl",
-    toolchain_type = "@rules_netlist//netlist:skidl_toolchain_type",
+    toolchain_type = "@hdlf_rules_netlist//netlist:skidl_toolchain_type",
 )
 ```
 
@@ -54,7 +54,7 @@ toolchain(
 ## determinism_test
 
 <pre>
-load("@rules_netlist//netlist:defs.bzl", "determinism_test")
+load("@hdlf_rules_netlist//netlist:defs.bzl", "determinism_test")
 
 determinism_test(<a href="#determinism_test-name">name</a>, <a href="#determinism_test-target">target</a>, <a href="#determinism_test-kwargs">**kwargs</a>)
 </pre>
@@ -96,14 +96,14 @@ determinism_test(
 ## swap_test
 
 <pre>
-load("@rules_netlist//netlist:defs.bzl", "swap_test")
+load("@hdlf_rules_netlist//netlist:defs.bzl", "swap_test")
 
 swap_test(<a href="#swap_test-name">name</a>, <a href="#swap_test-targets">targets</a>, <a href="#swap_test-kwargs">**kwargs</a>)
 </pre>
 
 Builds targets with every tool swapped for a stub, and checks them.
 
-The targets are built with `--@rules_netlist//netlist/toolchains:use_stub`,
+The targets are built with `--@hdlf_rules_netlist//netlist/toolchains:use_stub`,
 so each tool toolchain that honors the flag resolves to the stub tool.
 The stub writes a record into every output, files and directories
 alike. The test fails if any output file of the targets lacks the

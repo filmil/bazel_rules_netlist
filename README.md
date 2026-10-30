@@ -4,11 +4,11 @@
 [![Publish to my Bazel registry](https://github.com/filmil/bazel_rules_netlist/actions/workflows/publish.yml/badge.svg)](https://github.com/filmil/bazel_rules_netlist/actions/workflows/publish.yml)
 [![Publish on Bazel Central Registry](https://github.com/filmil/bazel_rules_netlist/actions/workflows/publish-bcr.yml/badge.svg)](https://github.com/filmil/bazel_rules_netlist/actions/workflows/publish-bcr.yml)
 
-# rules_netlist
+# hdlf_rules_netlist
 
 Hermetic Bazel rules for circuits written as code.
 The build runs a SKiDL circuit script, writes a KiCad netlist that the
-rules_kicad board rules use, and checks that a board's nets match it.
+hdlf_rules_kicad board rules use, and checks that a board's nets match it.
 Every tool comes from a Bazel toolchain, so nothing needs to be installed
 on the machine, and two builds give byte-identical outputs.
 
@@ -20,24 +20,25 @@ Only Linux x86_64 hosts are supported.
 ## Using it
 
 ```starlark
-bazel_dep(name = "rules_netlist", version = "0.1.0")
+bazel_dep(name = "hdlf_rules_netlist", version = "0.1.0")
 ```
 
-That is for a release. rules_netlist builds on rules_kicad, which is in
-no registry yet, and no release of rules_netlist is made until it is
-(issue #8). To use rules_netlist meanwhile, pin a commit of it with an
-`archive_override(module_name = "rules_netlist", ...)` of GitHub's archive
-of that commit, and pin rules_kicad as rules_netlist does, in your
-`MODULE.bazel` (an override counts only in the root module). Each is an
-archive checked by its hash, so the build needs no `git` on the host:
+That is for a release. hdlf_rules_netlist builds on hdlf_rules_kicad,
+which is in no registry yet, and no release of hdlf_rules_netlist is made
+until it is (issue #8). To use hdlf_rules_netlist meanwhile, pin a commit
+of it with an `archive_override(module_name = "hdlf_rules_netlist", ...)`
+of GitHub's archive of that commit, and pin hdlf_rules_kicad as
+hdlf_rules_netlist does, in your `MODULE.bazel` (an override counts only
+in the root module). Each is an archive checked by its hash, so the build
+needs no `git` on the host:
 
 ```starlark
-bazel_dep(name = "rules_kicad", version = "0.0.0")
+bazel_dep(name = "hdlf_rules_kicad", version = "0.0.0")
 archive_override(
-    module_name = "rules_kicad",
-    integrity = "sha256-L/dRAnTaCchSN66G81ijmGUiDzIUcU3DAy8RpNsaDMY=",
-    strip_prefix = "bazel_rules_kicad-eda301dc59f9c29bd4fe2460bdd521eb9253a745",
-    urls = ["https://github.com/filmil/bazel_rules_kicad/archive/eda301dc59f9c29bd4fe2460bdd521eb9253a745.tar.gz"],
+    module_name = "hdlf_rules_kicad",
+    integrity = "sha256-bz9RwwNoS0kCPESYe+qbysvlvuv9rVQpqbeqZ+Qj91U=",
+    strip_prefix = "bazel_rules_kicad-ecd6ae9329a7830c8f7144db88b5d2bbb24041e9",
+    urls = ["https://github.com/filmil/bazel_rules_kicad/archive/ecd6ae9329a7830c8f7144db88b5d2bbb24041e9.tar.gz"],
 )
 ```
 

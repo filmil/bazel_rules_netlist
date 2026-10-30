@@ -1,1 +1,1 @@
-bazel_dep(name = "rules_netlist", version = "0.0.0")
+bazel_dep(name = "hdlf_rules_netlist", version = "0.0.0")

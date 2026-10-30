@@ -23,6 +23,24 @@ Only Linux x86_64 hosts are supported.
 bazel_dep(name = "rules_netlist", version = "0.1.0")
 ```
 
+That is for a release. rules_netlist builds on rules_kicad, which is in
+no registry yet, and no release of rules_netlist is made until it is
+(issue #8). To use rules_netlist meanwhile, pin a commit of it with an
+`archive_override(module_name = "rules_netlist", ...)` of GitHub's archive
+of that commit, and pin rules_kicad as rules_netlist does, in your
+`MODULE.bazel` (an override counts only in the root module). Each is an
+archive checked by its hash, so the build needs no `git` on the host:
+
+```starlark
+bazel_dep(name = "rules_kicad", version = "0.0.0")
+archive_override(
+    module_name = "rules_kicad",
+    integrity = "sha256-L/dRAnTaCchSN66G81ijmGUiDzIUcU3DAy8RpNsaDMY=",
+    strip_prefix = "bazel_rules_kicad-eda301dc59f9c29bd4fe2460bdd521eb9253a745",
+    urls = ["https://github.com/filmil/bazel_rules_kicad/archive/eda301dc59f9c29bd4fe2460bdd521eb9253a745.tar.gz"],
+)
+```
+
 `.bazelrc`, while the module is only in the filmil registry:
 
 ```

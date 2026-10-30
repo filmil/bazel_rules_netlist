@@ -51,6 +51,15 @@ common --registry=https://bcr.bazel.build
 
 The rules are documented in [docs/defs.md](docs/defs.md).
 
+SKiDL runs on rules_python's hermetic CPython 3.12, with the locked wheels
+of `requirements_lock.txt` and the KiCad 9.0.9 symbol libraries that
+hdlf_rules_kicad pins (the SKiDL toolchain, issue #9). It needs no Python
+on the host and no flag in your `.bazelrc`.
+Under Bazel 8, rules_python asks for a C++ toolchain even though nothing
+is compiled, so a build that finds none on the host must bring one, such
+as hermetic_cc_toolchain's zig toolchain (`integration/MODULE.bazel` shows
+how). Bazel 9 does not ask.
+
 ## Building
 
 ```sh
@@ -84,3 +93,14 @@ See the overall description at the [project page][pp].
 This repository is under the Apache License 2.0 (`LICENSE`).
 Prebuilt tools and libraries that the build downloads are listed here, with
 their versions, sources and licenses, as they are added.
+
+* SKiDL 3.0.0 (https://github.com/devbisme/skidl), kinet2pcb 1.1.4 and
+  hierplace 1.1.0: MIT. PyPI has only their sdists; their wheels are built
+  from those and mirrored in this repository's release
+  `mirror-skidl-3.0.0` (`tools/mirror/README.md`).
+* Their dependencies, wheels from PyPI pinned by hash in
+  `requirements_lock.txt`: inspice 1.7.0.7 (GPL-3.0-or-later, which SKiDL
+  needs on Python 3.11 and later); numpy, matplotlib, h5py, rich and the
+  rest under BSD, MIT, PSF or similar licenses.
+* The KiCad 9.0.9 symbol libraries, through hdlf_rules_kicad:
+  CC-BY-SA-4.0 with the KiCad libraries exception.

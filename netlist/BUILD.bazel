@@ -15,6 +15,14 @@ toolchain_type(
     visibility = ["//visibility:public"],
 )
 
+# The SKiDL toolchain (issue #9): the SKiDL runner, on a hermetic Python,
+# and the KiCad symbol libraries it reads. Its ToolchainInfo has the tool
+# "skidl" for run_tool and SkidlToolchainInfo as `skidl`.
+toolchain_type(
+    name = "skidl_toolchain_type",
+    visibility = ["//visibility:public"],
+)
+
 exports_files(
     ["defs.bzl"],
     visibility = ["//docs:__pkg__"],

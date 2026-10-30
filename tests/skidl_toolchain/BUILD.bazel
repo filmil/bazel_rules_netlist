@@ -1,0 +1,70 @@
+# SPDX-License-Identifier: Apache-2.0
+#
+# skidl_toolchain (issue #9): what it gives, and the symbol libraries it
+# refuses. The smoke test that runs SKiDL is netlist/private/skidlsmoke.
+load("//netlist:defs.bzl", "skidl_toolchain")
+load(":toolchain_test.bzl", "fails_test", "info_test")
+
+# lib_a holds a library and a README; only the library counts.
+filegroup(
+    name = "lib_a_files",
+    srcs = glob(["lib_a/*"]),
+)
+
+filegroup(
+    name = "readme_only",
+    srcs = ["lib_a/README.txt"],
+)
+
+filegroup(
+    name = "two_dirs_files",
+    srcs = [
+        "lib_a/A.kicad_sym",
+        "lib_b/B.kicad_sym",
+    ],
+)
+
+skidl_toolchain(
+    name = "lib_a",
+    kicad_version = "10",
+    runner = "//netlist/private/stub",
+    symbols = ":lib_a_files",
+    tags = ["manual"],
+)
+
+info_test(
+    name = "lib_a_test",
+    size = "small",
+    kicad_version = "10",
+    symbol_dir = package_name() + "/lib_a",
+    symbols = ["A.kicad_sym"],
+    target_under_test = ":lib_a",
+)
+
+skidl_toolchain(
+    name = "no_libraries",
+    runner = "//netlist/private/stub",
+    symbols = ":readme_only",
+    tags = ["manual"],
+)
+
+fails_test(
+    name = "no_libraries_test",
+    size = "small",
+    message = "symbols gives no .kicad_sym files",
+    target_under_test = ":no_libraries",
+)
+
+skidl_toolchain(
+    name = "two_dirs",
+    runner = "//netlist/private/stub",
+    symbols = ":two_dirs_files",
+    tags = ["manual"],
+)
+
+fails_test(
+    name = "two_dirs_test",
+    size = "small",
+    message = "must be in one directory",
+    target_under_test = ":two_dirs",
+)

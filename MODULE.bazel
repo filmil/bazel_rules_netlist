@@ -33,11 +33,45 @@ archive_override(
     urls = ["https://github.com/filmil/bazel_rules_kicad/archive/ecd6ae9329a7830c8f7144db88b5d2bbb24041e9.tar.gz"],
 )
 
+# The KiCad symbol libraries SKiDL reads (KICAD9_SYMBOL_DIR): the same
+# pinned libraries hdlf_rules_kicad's rules use.
+kicad = use_extension("@hdlf_rules_kicad//kicad:extensions.bzl", "kicad")
+use_repo(kicad, "kicad_libs")
+
+# SKiDL runs on rules_python's hermetic CPython, with wheels locked with
+# their hashes in requirements_lock.txt (`bazel run
+# //tools:requirements.update` writes it from requirements.in). pip.parse
+# takes binary wheels only, so a missing wheel fails the fetch instead of
+# compiling on the host. SKiDL, kinet2pcb and hierplace have no wheels on
+# PyPI; theirs are built once and mirrored (tools/mirror, issue #9).
+bazel_dep(name = "rules_python", version = "2.4.6")
+
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+python.toolchain(
+    # Registers the 3.12 interpreter. Not the default: that is the root
+    # module's choice. The SKiDL runner picks 3.12 by its python_version.
+    is_default = False,
+    python_version = "3.12",
+)
+
+pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
+pip.parse(
+    download_only = True,
+    hub_name = "netlist_pip",
+    python_version = "3.12",
+    requirements_lock = "//:requirements_lock.txt",
+)
+use_repo(pip, "netlist_pip")
+
 # The helpers toolchain, which every rule that runs a tool needs.
 register_toolchains(
     "//netlist/toolchains:helpers",
-    # Last, so it is picked only off Linux x86_64 (spec P1).
+    # The SKiDL runner and its stub twin (issue #9).
+    "//netlist/toolchains:skidl",
+    "//netlist/toolchains:skidl_stub",
+    # Last, so they are picked only off Linux x86_64 (spec P1).
     "//netlist/toolchains:unsupported",
+    "//netlist/toolchains:skidl_unsupported",
 )
 
 # The demonstration tools of the swap test template

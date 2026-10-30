@@ -12,6 +12,54 @@ The rules arrive in milestone M6 (see the issues of
 https://github.com/filmil/bazel_rules_netlist). This file is the only public
 entry point; everything under `//netlist/private` may change without notice.
 
+<a id="skidl_toolchain"></a>
+
+## skidl_toolchain
+
+<pre>
+load("@hdlf_rules_netlist//netlist:defs.bzl", "skidl_toolchain")
+
+skidl_toolchain(<a href="#skidl_toolchain-name">name</a>, <a href="#skidl_toolchain-kicad_version">kicad_version</a>, <a href="#skidl_toolchain-runner">runner</a>, <a href="#skidl_toolchain-symbols">symbols</a>)
+</pre>
+
+A SKiDL toolchain: the runner and the KiCad symbol libraries.
+
+```starlark
+skidl_toolchain(
+    name = "skidl_impl",
+    runner = "//netlist/private/skidl_runner:runner",
+    symbols = "@kicad_libs//:symbols",
+)
+
+toolchain(
+    name = "skidl",
+    toolchain = ":skidl_impl",
+    toolchain_type = "@hdlf_rules_netlist//netlist:skidl_toolchain_type",
+)
+```
+
+Rules run the runner by the tool name `skidl` through `run_tool`:
+
+```
+runner --kicad_version N --symbol_dir DIR SCRIPT [ARGS...]
+```
+
+with N and DIR from `SkidlToolchainInfo` (`kicad_version`, `symbol_dir`).
+It points KICAD<N>_SYMBOL_DIR and KICAD_SYMBOL_DIR at DIR, sets SKiDL's
+default tool to kicad<N>, and runs SCRIPT as `__main__` with ARGS as they
+are (`--` before SCRIPT if it starts with `-`).
+
+**ATTRIBUTES**
+
+
+| Name  | Description | Type | Mandatory | Default |
+| :------------- | :------------- | :------------- | :------------- | :------------- |
+| <a id="skidl_toolchain-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
+| <a id="skidl_toolchain-kicad_version"></a>kicad_version |  The KiCad major version of the libraries.   | String | optional |  `"9"`  |
+| <a id="skidl_toolchain-runner"></a>runner |  The SKiDL runner: `runner --kicad_version N --symbol_dir DIR [--] SCRIPT [ARGS...]`.   | <a href="https://bazel.build/concepts/labels">Label</a> | required |  |
+| <a id="skidl_toolchain-symbols"></a>symbols |  The KiCad symbol libraries: the .kicad_sym files among these, all in one directory. Other files are left out.   | <a href="https://bazel.build/concepts/labels">Label</a> | required |  |
+
+
 <a id="tool_toolchain"></a>
 
 ## tool_toolchain
@@ -47,6 +95,27 @@ toolchain(
 | :------------- | :------------- | :------------- | :------------- | :------------- |
 | <a id="tool_toolchain-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
 | <a id="tool_toolchain-tools"></a>tools |  Executable targets, each mapped to the name rules use for it.   | <a href="https://bazel.build/rules/lib/core/dict">Dictionary: Label -> String</a> | required |  |
+
+
+<a id="SkidlToolchainInfo"></a>
+
+## SkidlToolchainInfo
+
+<pre>
+load("@hdlf_rules_netlist//netlist:defs.bzl", "SkidlToolchainInfo")
+
+SkidlToolchainInfo(<a href="#SkidlToolchainInfo-kicad_version">kicad_version</a>, <a href="#SkidlToolchainInfo-symbols">symbols</a>, <a href="#SkidlToolchainInfo-symbol_dir">symbol_dir</a>)
+</pre>
+
+What the SKiDL toolchain gives: the KiCad symbol libraries SKiDL reads.
+
+**FIELDS**
+
+| Name  | Description |
+| :------------- | :------------- |
+| <a id="SkidlToolchainInfo-kicad_version"></a>kicad_version |  The KiCad major version of the libraries, such as "9".    |
+| <a id="SkidlToolchainInfo-symbols"></a>symbols |  depset of the libraries' .kicad_sym files, all in one directory.    |
+| <a id="SkidlToolchainInfo-symbol_dir"></a>symbol_dir |  The path of that directory, for the runner's --symbol_dir.    |
 
 
 <a id="determinism_test"></a>

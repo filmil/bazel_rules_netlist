@@ -41,6 +41,24 @@ info_test(
     target_under_test = ":lib_a",
 )
 
+# A user's own toolchain, as the README shows: the public runner with
+# other symbol libraries.
+skidl_toolchain(
+    name = "user_toolchain",
+    runner = "//netlist:skidl_runner",
+    symbols = ":lib_a_files",
+    tags = ["manual"],
+)
+
+info_test(
+    name = "user_toolchain_test",
+    size = "small",
+    kicad_version = "9",
+    symbol_dir = package_name() + "/lib_a",
+    symbols = ["A.kicad_sym"],
+    target_under_test = ":user_toolchain",
+)
+
 skidl_toolchain(
     name = "no_libraries",
     runner = "//netlist/private/stub",

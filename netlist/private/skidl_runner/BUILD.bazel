@@ -22,7 +22,10 @@ py_binary(
         "@rules_python//python/config_settings:bootstrap_impl": "script",
     },
     python_version = "3.12",
-    visibility = ["//netlist/toolchains:__pkg__"],
+    visibility = [
+        "//netlist:__pkg__",
+        "//netlist/toolchains:__pkg__",
+    ],
     deps = [":runner_lib"],
 )
 

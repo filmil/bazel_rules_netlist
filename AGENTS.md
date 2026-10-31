@@ -33,14 +33,21 @@ the change.
    `bazel run //:update_goldens`, and give the reason in the commit
    message.
 5. A change to a circuit lists the nets it adds, removes or changes in
-   the pull request.
+   the pull request. A circuit written as code has no schematic, so it has
+   no schematic renders to attach (issue #12). A change to a board in this
+   repository (a `.kicad_pcb` fixture or an integration board) attaches
+   the before and after `kicad_render` PNGs of hdlf_rules_kicad to the pull
+   request, as hdlf_rules_kicad's own rule 5 asks; put them on a branch
+   that is never merged and link them, and delete the branch after the
+   merge.
 6. One logical change per pull request: one rule, one feature, or one
    design change.
 7. Stop and ask the operator before you:
    * delete a test, or make a tolerance larger;
    * change a toolchain version or a library version;
    * change a net or a part that has the `critical` tag;
-   * run a release or publish workflow, or set a secret.
+   * run a release or publish workflow, upload a mirror release, or set
+     a secret.
 8. When a test fails and the cause is not clear after three attempts, stop.
    Write the failure and your hypotheses in the pull request.
 
@@ -59,6 +66,18 @@ the change.
 * **Linux x86_64 only** in v1.
 * **Python only where the CAD library needs it.** Circuit scripts and the
   SKiDL runner are Python; every checker and helper is Go.
+* **No scripts that nothing builds.** A helper is a Bazel tool, Go with a
+  `go_test`, under `tools/` (as `tools/nooverrides` and `tools/mirror`), or
+  a documented command; `.github/workflows/release_prep.sh` is the
+  template's one exception.
+* **Wheels are pinned.** Every Python package comes from
+  `requirements_lock.txt`, by hash, binary wheels only. A package that
+  PyPI has only as an sdist is built once, reproducibly, and mirrored
+  (`tools/mirror/README.md`); the mirror test keeps the manifest and the
+  lock equal. A new package or version is rule 7.
+* **Check by exit code.** A local check passes when its command exits 0:
+  run `bazel run //tools:buildifier_check` and `bazel run //tools/lint`
+  and look at the status, not at the words they print.
 * **Commits for a BCR pull request carry no `Co-Authored-By` trailer**
   (the `bazel-bcr-publish` skill says why).
 

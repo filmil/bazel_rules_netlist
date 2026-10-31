@@ -23,6 +23,14 @@ toolchain_type(
     visibility = ["//visibility:public"],
 )
 
+# The SKiDL runner of the module's toolchain, for a user's own
+# skidl_toolchain with other symbol libraries.
+alias(
+    name = "skidl_runner",
+    actual = "//netlist/private/skidl_runner:runner",
+    visibility = ["//visibility:public"],
+)
+
 exports_files(
     ["defs.bzl"],
     visibility = ["//docs:__pkg__"],

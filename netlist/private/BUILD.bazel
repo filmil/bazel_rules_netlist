@@ -6,6 +6,7 @@ bzl_library(
     name = "private",
     srcs = [
         "determinism.bzl",
+        "parity_test.bzl",
         "run_tool.bzl",
         "skidl_netlist.bzl",
         "skidl_toolchain.bzl",

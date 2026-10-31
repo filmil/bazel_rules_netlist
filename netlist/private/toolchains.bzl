@@ -6,7 +6,8 @@ Every tool an action or a test runs comes from a toolchain (spec section
 with a `tools` dict, from tool name to `FilesToRunProvider`; `run_tool`
 looks a tool up there by name. The helpers toolchain brings this module's
 own Go helpers: the launcher every action runs through, the checker of the
-swap test, and the comparer of determinism_test. The stub tool is used directly by stub tool toolchains.
+swap test, the comparer of determinism_test and netlist_parity_test's
+checker. The stub tool is used directly by stub tool toolchains.
 """
 
 HelpersInfo = provider(
@@ -15,6 +16,7 @@ HelpersInfo = provider(
         "launcher": "FilesToRunProvider: runs a tool with a private home.",
         "swapcheck": "DefaultInfo of the swap test's checker (a target binary).",
         "compare": "DefaultInfo of determinism_test's comparer (a target binary).",
+        "parity": "DefaultInfo of netlist_parity_test's checker (a target binary).",
     },
 )
 
@@ -23,15 +25,18 @@ def _helpers_toolchain_impl(ctx):
         launcher = ctx.attr.launcher[DefaultInfo].files_to_run,
         swapcheck = ctx.attr.swapcheck[DefaultInfo],
         compare = ctx.attr.compare[DefaultInfo],
+        parity = ctx.attr.parity[DefaultInfo],
     ))]
 
 helpers_toolchain = rule(
     implementation = _helpers_toolchain_impl,
-    doc = "The helpers toolchain: the launcher, the swap checker and the determinism comparer.",
+    doc = "The helpers toolchain: the launcher, the swap checker, the determinism comparer and " +
+          "the parity checker.",
     attrs = {
         "launcher": attr.label(mandatory = True, executable = True, cfg = "exec"),
         "swapcheck": attr.label(mandatory = True, executable = True, cfg = "target"),
         "compare": attr.label(mandatory = True, executable = True, cfg = "target"),
+        "parity": attr.label(mandatory = True, executable = True, cfg = "target"),
     },
 )
 

@@ -9,6 +9,7 @@ load(
     "@hdlf_rules_netlist//netlist:defs.bzl",
     "SkidlToolchainInfo",
     "determinism_test",
+    "netlist_parity_test",
     "skidl_netlist",
     "skidl_toolchain",
     "swap_test",
@@ -19,6 +20,54 @@ load(
 The rules arrive in milestone M6 (see the issues of
 https://github.com/filmil/bazel_rules_netlist). This file is the only public
 entry point; everything under `//netlist/private` may change without notice.
+
+<a id="netlist_parity_test"></a>
+
+## netlist_parity_test
+
+<pre>
+load("@hdlf_rules_netlist//netlist:defs.bzl", "netlist_parity_test")
+
+netlist_parity_test(<a href="#netlist_parity_test-name">name</a>, <a href="#netlist_parity_test-board">board</a>, <a href="#netlist_parity_test-netlist">netlist</a>, <a href="#netlist_parity_test-want_error">want_error</a>)
+</pre>
+
+Checks that a board's nets join the pins a netlist's nets join.
+
+```starlark
+netlist_parity_test(
+    name = "parity_test",
+    size = "small",
+    board = "main.kicad_pcb",
+    netlist = ":netlist",   # skidl_netlist, or hdlf_rules_kicad's kicad_netlist
+)
+```
+
+Nets are compared by their pins, not their names: SKiDL names an unnamed
+net `N$1` where KiCad's schematic says `Net-(D1-A)`, and the two match when
+they join the same pins. The test fails, naming each difference, when:
+
+* a netlist net's pin is on no net of the board (a missing net or pad);
+* a netlist net is split over two or more nets of the board;
+* a board net joins pins of two or more netlist nets, or a pin the
+  netlist leaves unconnected;
+* a component of the netlist has no footprint on the board.
+
+A pin whose pads (two of one number, such as an SOT-223's tab) are on two
+nets fails too. A netlist net of one pin connects nothing and is not
+checked, and neither is a board net of one pad: a footprint the netlist
+does not name, such as a mounting hole, fails only when its pads are on a
+net with other pins.
+
+**ATTRIBUTES**
+
+
+| Name  | Description | Type | Mandatory | Default |
+| :------------- | :------------- | :------------- | :------------- | :------------- |
+| <a id="netlist_parity_test-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
+| <a id="netlist_parity_test-board"></a>board |  The board, a `.kicad_pcb` file.   | <a href="https://bazel.build/concepts/labels">Label</a> | required |  |
+| <a id="netlist_parity_test-netlist"></a>netlist |  The KiCad netlist (`skidl_netlist` or `kicad_netlist`).   | <a href="https://bazel.build/concepts/labels">Label</a> | required |  |
+| <a id="netlist_parity_test-want_error"></a>want_error |  For a known-bad board: text that one of the differences must contain. The test then passes only if the check finds it. Empty by default: the two must agree.   | String | optional |  `""`  |
+
 
 <a id="skidl_netlist"></a>
 

@@ -8,6 +8,7 @@ load(
     "@hdlf_rules_netlist//netlist:defs.bzl",
     "SkidlToolchainInfo",
     "determinism_test",
+    "netlist_parity_test",
     "skidl_netlist",
     "skidl_toolchain",
     "swap_test",
@@ -21,6 +22,7 @@ entry point; everything under `//netlist/private` may change without notice.
 """
 
 load("//netlist/private:determinism.bzl", _determinism_test = "determinism_test")
+load("//netlist/private:parity_test.bzl", _netlist_parity_test = "netlist_parity_test")
 load("//netlist/private:skidl_netlist.bzl", _skidl_netlist = "skidl_netlist")
 load("//netlist/private:skidl_toolchain.bzl", _SkidlToolchainInfo = "SkidlToolchainInfo", _skidl_toolchain = "skidl_toolchain")
 load("//netlist/private:swap_test.bzl", _swap_test = "swap_test")
@@ -28,6 +30,7 @@ load("//netlist/private:toolchains.bzl", _tool_toolchain = "tool_toolchain")
 
 SkidlToolchainInfo = _SkidlToolchainInfo
 determinism_test = _determinism_test
+netlist_parity_test = _netlist_parity_test
 skidl_netlist = _skidl_netlist
 skidl_toolchain = _skidl_toolchain
 swap_test = _swap_test

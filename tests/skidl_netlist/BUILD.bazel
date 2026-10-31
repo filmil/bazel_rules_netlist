@@ -1,0 +1,28 @@
+# SPDX-License-Identifier: Apache-2.0
+#
+# skidl_netlist (issue #10): a circuit script with a module of parts gives
+# a netlist with a fixed header, the same on two builds.
+load("@rules_go//go:def.bzl", "go_test")
+load("//netlist:defs.bzl", "determinism_test", "skidl_netlist")
+
+skidl_netlist(
+    name = "led",
+    src = "circuit.py",
+    deps = ["lib/parts.py"],
+)
+
+determinism_test(
+    name = "led_determinism_test",
+    size = "small",
+    target = ":led",
+)
+
+go_test(
+    name = "netlist_test",
+    size = "small",
+    srcs = ["netlist_test.go"],
+    args = ["--netlist=$(rlocationpath :led)"],
+    data = [":led"],
+    pure = "on",
+    deps = ["@rules_go//go/runfiles"],
+)

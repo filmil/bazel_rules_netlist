@@ -1,0 +1,43 @@
+# SPDX-License-Identifier: Apache-2.0
+#
+# skidl_netlist (issue #10) as a user of both modules writes it: the e2e
+# circuit of hdlf_rules_kicad as SKiDL code, its netlist, and the e2e
+# board laid out against that netlist with kicad_pcb(netlist = ...). The
+# board is hdlf_rules_kicad's integration/e2e/main.kicad_pcb at the pinned
+# commit. M6's exit: the same netlist on two builds.
+load("@bazel_skylib//rules:build_test.bzl", "build_test")
+load("@hdlf_rules_kicad//kicad:defs.bzl", "kicad_gerbers", "kicad_pcb")
+load("@hdlf_rules_netlist//netlist:defs.bzl", "determinism_test", "skidl_netlist")
+
+skidl_netlist(
+    name = "netlist",
+    src = "circuit.py",
+    deps = ["parts.py"],
+)
+
+determinism_test(
+    name = "netlist_determinism_test",
+    size = "small",
+    target = ":netlist",
+)
+
+kicad_pcb(
+    name = "pcb",
+    board = "main.kicad_pcb",
+    netlist = ":netlist",
+)
+
+# The board with the netlist goes through KiCad.
+kicad_gerbers(
+    name = "gerbers",
+    pcb = ":pcb",
+)
+
+build_test(
+    name = "pcb_builds",
+    size = "small",
+    targets = [
+        ":pcb",
+        ":gerbers",
+    ],
+)

@@ -5,12 +5,75 @@ Public API of hdlf_rules_netlist.
 Load every rule from this file:
 
 ```starlark
-load("@hdlf_rules_netlist//netlist:defs.bzl", "determinism_test", "swap_test", "tool_toolchain")
+load(
+    "@hdlf_rules_netlist//netlist:defs.bzl",
+    "SkidlToolchainInfo",
+    "determinism_test",
+    "skidl_netlist",
+    "skidl_toolchain",
+    "swap_test",
+    "tool_toolchain",
+)
 ```
 
 The rules arrive in milestone M6 (see the issues of
 https://github.com/filmil/bazel_rules_netlist). This file is the only public
 entry point; everything under `//netlist/private` may change without notice.
+
+<a id="skidl_netlist"></a>
+
+## skidl_netlist
+
+<pre>
+load("@hdlf_rules_netlist//netlist:defs.bzl", "skidl_netlist")
+
+skidl_netlist(<a href="#skidl_netlist-name">name</a>, <a href="#skidl_netlist-deps">deps</a>, <a href="#skidl_netlist-src">src</a>)
+</pre>
+
+A KiCad netlist, `<name>.net`, from a SKiDL circuit script.
+
+```starlark
+load("@hdlf_rules_netlist//netlist:defs.bzl", "skidl_netlist")
+load("@hdlf_rules_kicad//kicad:defs.bzl", "kicad_pcb")
+
+skidl_netlist(
+    name = "netlist",
+    src = "circuit.py",
+    deps = ["parts.py"],   # modules circuit.py imports
+)
+
+kicad_pcb(
+    name = "pcb",
+    board = "main.kicad_pcb",
+    netlist = ":netlist",
+)
+```
+
+The script builds its circuit with SKiDL; it need not call
+`generate_netlist()`. Its parts come from the KiCad symbol libraries of
+the SKiDL toolchain (KiCad 9.0.9, the libraries hdlf_rules_kicad pins),
+and nowhere else. The netlist is the default circuit's, as SKiDL writes it
+for KiCad, with a fixed header: the source is the script's path, the date
+1970-01-01 and the tool SKiDL with its version. So the same script gives
+the same bytes, wherever it is built and whether or not the script is
+generated. A script that makes no parts fails.
+
+SKiDL tags each part, and the netlist's time stamp of a component, which
+links it to its footprint on the board, comes from the tag. A part with no
+`tag=` gets one from a random generator that the runner seeds, so the
+same script gives the same tags; but adding or moving a part can change
+the tags of the parts made after it. Give `tag=` to a part whose board
+link must stay put.
+
+**ATTRIBUTES**
+
+
+| Name  | Description | Type | Mandatory | Default |
+| :------------- | :------------- | :------------- | :------------- | :------------- |
+| <a id="skidl_netlist-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
+| <a id="skidl_netlist-deps"></a>deps |  Python modules the script imports, as plain .py files: each file's directory goes on `sys.path`, after the script's own, in this order.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="skidl_netlist-src"></a>src |  The circuit script.   | <a href="https://bazel.build/concepts/labels">Label</a> | required |  |
+
 
 <a id="skidl_toolchain"></a>
 

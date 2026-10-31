@@ -1,0 +1,36 @@
+# SPDX-License-Identifier: Apache-2.0
+#
+# The SKiDL toolchain's smoke test (issue #9): SKiDL runs on the hermetic
+# Python and finds a part in the pinned KiCad symbol libraries. It lives
+# under private/ because its rule uses run_tool.
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+load("//netlist:defs.bzl", "swap_test")
+load(":smoke.bzl", "skidl_smoke")
+
+exports_files(
+    ["expected_resistor.txt"],
+    visibility = ["//visibility:public"],
+)
+
+skidl_smoke(
+    name = "resistor",
+    script = "circuit.py",
+    # The integration module builds it too: the toolchain works where
+    # hdlf_rules_netlist is a dependency, not the root module.
+    visibility = ["//visibility:public"],
+)
+
+diff_test(
+    name = "resistor_test",
+    size = "small",
+    file1 = ":resistor",
+    file2 = "expected_resistor.txt",
+)
+
+# With the stub in place of the runner, the output carries the stub's
+# record: the action runs the toolchain's tool and nothing else.
+swap_test(
+    name = "swap_test",
+    size = "small",
+    targets = [":resistor"],
+)

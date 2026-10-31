@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: Apache-2.0
+load("@rules_python//python:py_binary.bzl", "py_binary")
+load("@rules_python//python:py_library.bzl", "py_library")
+load("@rules_python//python:py_test.bzl", "py_test")
+
+# The SKiDL runner of the default SKiDL toolchain (issue #9), on rules_python's
+# hermetic CPython 3.12 with the locked wheels of @netlist_pip.
+py_library(
+    name = "runner_lib",
+    srcs = ["runner.py"],
+    imports = ["."],
+    deps = ["@netlist_pip//skidl"],
+)
+
+py_binary(
+    name = "runner",
+    srcs = ["runner.py"],
+    # rules_python's default bootstrap starts with `#!/usr/bin/env python3`,
+    # the host's Python; "script" starts the hermetic interpreter. Set here,
+    # a user's build needs no flag for it.
+    config_settings = {
+        "@rules_python//python/config_settings:bootstrap_impl": "script",
+    },
+    python_version = "3.12",
+    visibility = ["//netlist/toolchains:__pkg__"],
+    deps = [":runner_lib"],
+)
+
+py_test(
+    name = "runner_test",
+    size = "small",
+    srcs = ["runner_test.py"],
+    config_settings = {
+        "@rules_python//python/config_settings:bootstrap_impl": "script",
+    },
+    python_version = "3.12",
+    deps = [":runner_lib"],
+)

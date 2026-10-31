@@ -23,4 +23,11 @@ common --incompatible_enable_proto_toolchain_resolution
 common --@protobuf//bazel/toolchains:prefer_prebuilt_protoc
 
 # Add your local user settings to file `user.bazelrc`.
+# rules_python's default bootstrap starts every py_binary with
+# `#!/usr/bin/env python3`, the host's Python; "script" starts the hermetic
+# interpreter instead. The SKiDL runner sets it on itself (config_settings),
+# so a user's build needs no flag; this covers rules_python's own tools,
+# such as //tools:requirements.
+common --@rules_python//python/config_settings:bootstrap_impl=script
+
 try-import %workspace%/user.bazelrc

@@ -28,3 +28,10 @@ config_setting(
     flag_values = {":tools": "source"},
     visibility = ["//visibility:public"],
 )
+
+# The SKiDL toolchain's Python requirements (issue #9): //tools:requirements
+# locks them; tools/mirror's test reads the lock.
+exports_files([
+    "requirements.in",
+    "requirements_lock.txt",
+])

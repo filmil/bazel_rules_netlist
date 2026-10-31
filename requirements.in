@@ -1,0 +1,7 @@
+# The SKiDL toolchain's Python packages (issue #9). Lock with
+# `bazel run //tools:requirements.update`; it writes requirements_lock.txt
+# with every wheel's hash. PyPI has only sdists of these three; their
+# wheels are built once and mirrored (tools/mirror/README.md).
+skidl @ https://github.com/filmil/bazel_rules_netlist/releases/download/mirror-skidl-3.0.0/skidl-3.0.0-py3-none-any.whl
+kinet2pcb @ https://github.com/filmil/bazel_rules_netlist/releases/download/mirror-skidl-3.0.0/kinet2pcb-1.1.4-py2.py3-none-any.whl
+hierplace @ https://github.com/filmil/bazel_rules_netlist/releases/download/mirror-skidl-3.0.0/hierplace-1.1.0-py3-none-any.whl

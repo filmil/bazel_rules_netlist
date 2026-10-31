@@ -16,6 +16,16 @@ build_test(
     targets = ["@hdlf_rules_kicad//kicad:defs"],
 )
 
+# The SKiDL toolchain (issue #9) resolves and runs in a module that
+# depends on hdlf_rules_netlist: its hermetic Python, the locked wheels
+# and the KiCad symbol libraries all come through the dependency.
+diff_test(
+    name = "skidl_toolchain_test",
+    size = "small",
+    file1 = "@hdlf_rules_netlist//netlist/private/skidlsmoke:resistor",
+    file2 = "@hdlf_rules_netlist//netlist/private/skidlsmoke:expected_resistor.txt",
+)
+
 # The public packages load and build: the rules, and the root package
 # with the --@hdlf_rules_netlist//:tools flag that every user's build reads.
 build_test(

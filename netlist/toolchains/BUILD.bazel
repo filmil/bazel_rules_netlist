@@ -29,6 +29,7 @@ helpers_toolchain(
     name = "helpers_impl",
     compare = "//netlist/private/detcompare",
     launcher = "//netlist/private/launcher",
+    parity = "//netlist/private/parity:cmd",
     swapcheck = "//netlist/private/swapcheck",
 )
 

@@ -1,0 +1,33 @@
+# SPDX-License-Identifier: Apache-2.0
+load("@rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
+
+# netlist_parity_test's checker (issue #11): a netlist's nets against a
+# board's, by the pins they join. Pure Go, built from source.
+go_library(
+    name = "parity",
+    srcs = [
+        "parity.go",
+        "sexpr.go",
+    ],
+    importpath = "github.com/filmil/bazel_rules_netlist/netlist/private/parity",
+    visibility = ["//visibility:private"],
+)
+
+go_test(
+    name = "parity_test",
+    size = "small",
+    srcs = ["parity_test.go"],
+    embed = [":parity"],
+    pure = "on",
+)
+
+go_binary(
+    name = "cmd",
+    srcs = ["cmd/main.go"],
+    pure = "on",
+    visibility = ["//netlist/toolchains:__pkg__"],
+    deps = [
+        ":parity",
+        "@rules_go//go/runfiles",
+    ],
+)

@@ -8,6 +8,7 @@ load("//netlist:defs.bzl", "determinism_test", "skidl_netlist")
 skidl_netlist(
     name = "led",
     src = "circuit.py",
+    visibility = ["//tests/netlist_parity_test:__pkg__"],
     deps = ["lib/parts.py"],
 )
 

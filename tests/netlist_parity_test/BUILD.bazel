@@ -1,0 +1,31 @@
+# SPDX-License-Identifier: Apache-2.0
+#
+# netlist_parity_test (issue #11): hdlf_rules_kicad's e2e board against the
+# SKiDL netlist of the same circuit, and known-bad boards (spec T3; M6's
+# exit: a board with a missing net fails). The boards are
+# hdlf_rules_kicad's integration/e2e/main.kicad_pcb at the pinned commit;
+# missing_net has D1's anode pad on no net, short has D1's cathode on +3V3.
+load("//netlist:defs.bzl", "netlist_parity_test")
+
+netlist_parity_test(
+    name = "parity_test",
+    size = "small",
+    board = "main.kicad_pcb",
+    netlist = "//tests/skidl_netlist:led",
+)
+
+netlist_parity_test(
+    name = "missing_net_test",
+    size = "small",
+    board = "missing_net.kicad_pcb",
+    netlist = "//tests/skidl_netlist:led",
+    want_error = "pin D1.2 is on no net of the board",
+)
+
+netlist_parity_test(
+    name = "short_test",
+    size = "small",
+    board = "short.kicad_pcb",
+    netlist = "//tests/skidl_netlist:led",
+    want_error = "board net +3V3: joins netlist nets +3V3, GND",
+)

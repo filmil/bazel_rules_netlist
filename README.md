@@ -49,6 +49,24 @@ common --registry=https://raw.githubusercontent.com/filmil/bazel-registry/main
 common --registry=https://bcr.bazel.build
 ```
 
+A KiCad netlist from a SKiDL circuit script, for a board:
+
+```starlark
+load("@hdlf_rules_kicad//kicad:defs.bzl", "kicad_pcb")
+load("@hdlf_rules_netlist//netlist:defs.bzl", "skidl_netlist")
+
+skidl_netlist(
+    name = "netlist",
+    src = "circuit.py",
+)
+
+kicad_pcb(
+    name = "pcb",
+    board = "main.kicad_pcb",
+    netlist = ":netlist",
+)
+```
+
 The rules are documented in [docs/defs.md](docs/defs.md).
 
 SKiDL runs on rules_python's hermetic CPython 3.12, with the locked wheels

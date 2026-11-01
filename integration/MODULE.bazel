@@ -21,18 +21,9 @@ local_path_override(
 
 bazel_dep(name = "bazel_skylib", version = "1.9.2")
 
-# hdlf_rules_netlist's own override does not reach this module: overrides
-# apply in the root module only. The same pinned commit of hdlf_rules_kicad
-# (issue #8).
-bazel_dep(name = "hdlf_rules_kicad", version = "0.0.0")
-
-# The same pin as MODULE.bazel and README.md; change all three together.
-archive_override(
-    module_name = "hdlf_rules_kicad",
-    integrity = "sha256-bz9RwwNoS0kCPESYe+qbysvlvuv9rVQpqbeqZ+Qj91U=",
-    strip_prefix = "bazel_rules_kicad-ecd6ae9329a7830c8f7144db88b5d2bbb24041e9",
-    urls = ["https://github.com/filmil/bazel_rules_kicad/archive/ecd6ae9329a7830c8f7144db88b5d2bbb24041e9.tar.gz"],
-)
+# hdlf_rules_kicad, from the filmil registry (.bazelrc), the version
+# hdlf_rules_netlist needs; this module uses its rules directly too.
+bazel_dep(name = "hdlf_rules_kicad", version = "0.0.1")
 
 # Under Bazel 8, a py_binary of rules_python (hdlf_rules_netlist's SKiDL
 # runner) asks for a C++ toolchain, though it compiles nothing; Bazel 9 does

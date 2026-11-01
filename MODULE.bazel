@@ -16,22 +16,9 @@ bazel_dep(name = "rules_go", version = "0.64.2")
 
 # skidl_netlist's netlist feeds hdlf_rules_kicad's kicad_pcb(netlist = ...),
 # and netlist_parity_test reads hdlf_rules_kicad's boards; KiCad runs only
-# through hdlf_rules_kicad's toolchain. hdlf_rules_kicad is in no registry
-# yet, so this pins a commit of it (issue #8), as GitHub's archive of that
-# commit, checked by its hash: git_override would need git on the host, and
-# the CI image has none. Remove the override once hdlf_rules_kicad 0.1.0 is in
-# the BCR; until then a release waits: Tag and Release's bcr_ready job
-# requires that every dependency resolves from the BCR alone.
-bazel_dep(name = "hdlf_rules_kicad", version = "0.0.0")
-
-# The same pin is in integration/MODULE.bazel and README.md; change all
-# three together.
-archive_override(
-    module_name = "hdlf_rules_kicad",
-    integrity = "sha256-bz9RwwNoS0kCPESYe+qbysvlvuv9rVQpqbeqZ+Qj91U=",
-    strip_prefix = "bazel_rules_kicad-ecd6ae9329a7830c8f7144db88b5d2bbb24041e9",
-    urls = ["https://github.com/filmil/bazel_rules_kicad/archive/ecd6ae9329a7830c8f7144db88b5d2bbb24041e9.tar.gz"],
-)
+# through hdlf_rules_kicad's toolchain. It comes from the filmil registry
+# (.bazelrc); a published release names it by version, with no override.
+bazel_dep(name = "hdlf_rules_kicad", version = "0.0.1")
 
 # The KiCad symbol libraries SKiDL reads (KICAD9_SYMBOL_DIR): the same
 # pinned libraries hdlf_rules_kicad's rules use.

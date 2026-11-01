@@ -17,9 +17,7 @@ load(
 )
 ```
 
-The rules arrive in milestone M6 (see the issues of
-https://github.com/filmil/bazel_rules_netlist). This file is the only public
-entry point; everything under `//netlist/private` may change without notice.
+This file is the only public entry point; everything under `//netlist/private` may change without notice.
 
 <a id="netlist_parity_test"></a>
 
@@ -184,19 +182,30 @@ tool_toolchain(<a href="#tool_toolchain-name">name</a>, <a href="#tool_toolchain
 
 A toolchain that offers tools by name, for `run_tool`.
 
-Example, a toolchain for another build of the SKiDL runner (the toolchain
-type arrives with this module's toolchain issue):
+It serves rules that start their actions through this module's
+`run_tool`, which is private (`//netlist/private`). Today those are this
+module's own test templates: the swap test template, whose toy tool has a
+real toolchain and a stub one, and the determinism test's demo. A user of
+the module has no use for it yet.
+
+It cannot stand in for the SKiDL toolchain: `skidl_netlist` reads more
+than `tools` from `@hdlf_rules_netlist//netlist:skidl_toolchain_type`, so
+another SKiDL build is declared with `skidl_toolchain`, under that type.
+
+Its shape, as the swap test template uses it:
 
 ```starlark
+toolchain_type(name = "echo_toolchain_type")
+
 tool_toolchain(
-    name = "my_skidl_impl",
-    tools = {"//third_party/skidl:skidl": "skidl"},
+    name = "echo_impl",
+    tools = {":my_echo": "echo"},
 )
 
 toolchain(
-    name = "my_skidl",
-    toolchain = ":my_skidl_impl",
-    toolchain_type = "@hdlf_rules_netlist//netlist:skidl_toolchain_type",
+    name = "echo",
+    toolchain = ":echo_impl",
+    toolchain_type = ":echo_toolchain_type",
 )
 ```
 

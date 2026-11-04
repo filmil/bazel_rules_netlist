@@ -6,7 +6,10 @@ load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 
 # Where the tools come from:
 #   --@hdlf_rules_netlist//:tools=prebuilt   download them by sha256 (the default)
-#   --@hdlf_rules_netlist//:tools=source     build them from source (optional in v1)
+#   --@hdlf_rules_netlist//:tools=source     build them from source
+# No toolchain reads the setting yet: both values give the same build. It
+# is kept so a build that sets it keeps working when a source build of
+# the tools arrives; the integration module checks that it loads.
 string_flag(
     name = "tools",
     build_setting_default = "prebuilt",

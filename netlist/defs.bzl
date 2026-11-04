@@ -16,9 +16,7 @@ load(
 )
 ```
 
-The rules arrive in milestone M6 (see the issues of
-https://github.com/filmil/bazel_rules_netlist). This file is the only public
-entry point; everything under `//netlist/private` may change without notice.
+This file is the only public entry point; everything under `//netlist/private` may change without notice.
 """
 
 load("//netlist/private:determinism.bzl", _determinism_test = "determinism_test")

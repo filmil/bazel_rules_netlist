@@ -34,9 +34,9 @@ helpers_toolchain = rule(
           "the parity checker.",
     attrs = {
         "launcher": attr.label(mandatory = True, executable = True, cfg = "exec"),
-        "swapcheck": attr.label(mandatory = True, executable = True, cfg = "target"),
-        "compare": attr.label(mandatory = True, executable = True, cfg = "target"),
-        "parity": attr.label(mandatory = True, executable = True, cfg = "target"),
+        "swapcheck": attr.label(mandatory = True, executable = True, cfg = "exec"),
+        "compare": attr.label(mandatory = True, executable = True, cfg = "exec"),
+        "parity": attr.label(mandatory = True, executable = True, cfg = "exec"),
     },
 )
 
